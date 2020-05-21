@@ -1,28 +1,52 @@
 ## 概要
 
-Ansible用playbookです
-サーバ証明書／クライアント証明書を発行します。
+- Ansible用playbookです。
+- サーバ証明書／クライアント証明書を発行します。
 
-## 自動設定内容
+### playbook実行
 
-1. 発行したい証明書情報をCSVファイルに登録
-    
-$ cat server-certs.csv 
+
+#### 1. git clone
+
+```
+git clone https://github.com/mishikawan/generatecert-ansible.git
+```
+
+
+#### 2. yml(vars値), csvファイルの編集
+
+##### 2.1  generate_certs.yml (varsの値を各自環境用に変更してください)
+```
+- hosts: 127.0.0.1
+  gather_facts: False
+  vars:
+    ca_private: "~/easy-rsa/pki/private/ca.key"   CA証明書の秘密鍵のパス(各自指定パスを記載)
+    ca_public: "~/easy-rsa/pki/ca.crt"            CA証明書の公開鍵のパス(各自指定パスを記載)
+    publicdir: "~/easy-rsa/pki/issued"            発行した公開鍵の格納場所(各自指定パスを記載)
+    csrdir: "~/easy-rsa/pki/reqs"                 CSRの格納場所(各自指定パスを記載)
+    privatedir: "~/easy-rsa/pki/privates"             発行した秘密鍵の格納場所(各自指定パスを記載)
+    pkcs12dir: "~/easy-rsa/pki/privates"              発行したPKCS12の格納場所(各自指定パスを記載)
+    server_csv: "server-certs.csv"
+    client_csv: "client-certs.csv"
+```
+
+##### 2-2. server-certs.csv (発行したいサーバ証明書情報を記載。一行目はカラム情報のため変更不可能)
+```
 name,country,state,locality,organization,organizational_unit
 myhome.local,JP,Osaka,Osaka,MyHome,MyHome
+```
 
-$ cat client-certs.csv 
+##### 2-3. client-certs.csv (発行したいクライアント証明書情報を記載。一行目はカラム情報のため変更不可能)
+```
 name,mailaddr,pass,organizational_unit
 user001,user001@myhome.local,pass001,Development
 user002,user002@myhome.local,pass002,Production
 user003,user003@myhome.local,pass003,Sales
-
-
-### playbook実行
-
-ansibleサーバで実行
 ```
-git clone https://github.com/mishikawan/generatecert-ansible.git
+
+#### 3. ansible実行
+
+```
 ansible-playbook generate_certs.yml
 ```
 
