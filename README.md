@@ -10,6 +10,7 @@ Ansible用playbookです
 
 ```
 git clone https://github.com/mishikawan/generatecert-ansible.git
+```
 
 
 2. csvファイルの編集
