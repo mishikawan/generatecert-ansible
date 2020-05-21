@@ -1,0 +1,101 @@
+- hosts: 127.0.0.1
+  gather_facts: False
+  vars:
+    ca_private: "~/easy-rsa/pki/private/ca.key"
+    ca_public: "~/easy-rsa/pki/ca.crt"
+    publicdir: "~/easy-rsa/pki/issued"
+    csrdir: "~/easy-rsa/pki/reqs"
+    privatedir: "~/easy-rsa/privates"
+    pkcs12dir: "~/easy-rsa/privates"
+    server_csv: "server-certs.csv"
+    client_csv: "client-certs.csv"
+  tasks:
+  - name: Read server certificate csv
+    read_csv:
+      path: "{{ server_csv }}"
+      delimiter: ','
+    register: servers 
+
+  - name: Read client certificate csv
+    read_csv:
+      path: "{{ client_csv }}"
+      delimiter: ','
+    register: clients 
+
+  - name: generate server private-key
+    openssl_privatekey:
+      path: "{{ privatedir }}/{{ item.name }}.key"
+      size: 2048
+      type: RSA
+    with_items: "{{ servers.list }}"
+
+  - name: generate client private-key
+    openssl_privatekey:
+      path: "{{ privatedir }}/{{ item.name }}.key"
+      size: 2048
+      type: RSA
+    with_items: "{{ clients.list }}"
+
+  - name: generate server csr
+    openssl_csr:
+      path: "{{ csrdir }}/{{ item.name }}.csr"
+      privatekey_path: "{{ privatedir }}/{{ item.name }}.key"
+      key_usage: 
+        - Digital Signature
+        - Key Encipherment
+      extended_key_usage:
+        - TLS Web Server Authentication
+        - TLS Web Client Authentication
+      common_name: "{{ item.name }}"
+      country_name: "{{ item.country }}"
+      locality_name: "{{ item.locality }}"
+      organizational_unit_name: "{{ item.organizational_unit }}"
+      organization_name: "{{ item.organization }}"
+      state_or_province_name: "{{ item.state }}"
+    with_items: "{{ servers.list }}"
+
+  - name: generate client csr
+    openssl_csr:
+      path: "{{ csrdir }}/{{ item.name }}.csr"
+      privatekey_path: "{{ privatedir }}/{{ item.name }}.key"
+      organizational_unit_name: "{{ item.organizational_unit }}"
+      common_name: "{{ item.name }}"
+      key_usage:
+        - digitalSignature
+        - keyAgreement
+      extended_key_usage:
+        - clientAuth
+    with_items: "{{ clients.list }}"
+
+  - name: sign server cert
+    openssl_certificate:
+      path: "{{ publicdir }}/{{ item.name }}.crt"
+      csr_path: "{{ csrdir }}/{{ item.name }}.csr"
+      ownca_path: "{{ ca_public }}"
+      ownca_privatekey_path: "{{ ca_private }}"
+      ownca_not_after: "+1825d"
+      provider: ownca
+    with_items: "{{ servers.list }}"
+
+  - name: sign client cert
+    openssl_certificate:
+      path: "{{ publicdir }}/{{ item.name }}.crt"
+      csr_path: "{{ csrdir }}/{{ item.name }}.csr"
+      ownca_path: "{{ ca_public }}"
+      ownca_privatekey_path: "{{ ca_private }}"
+      ownca_not_after: "+1825d"
+      provider: ownca
+    with_items: "{{ clients.list }}"
+
+  - name: Generate PKCS#12 file
+    openssl_pkcs12:
+      action: export
+      path: "{{ pkcs12dir }}/{{ item.name }}.p12"
+      friendly_name: "{{ item.name }}"
+      privatekey_path: "{{ privatedir }}/{{ item.name }}.key"
+      certificate_path: "{{ publicdir }}/{{ item.name }}.crt"
+      other_certificates: "{{ ca_public }}"
+      passphrase: "{{ item.pass }}"
+      state: present
+    with_items: "{{ clients.list }}"
+

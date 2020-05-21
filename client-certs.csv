@@ -1,0 +1,4 @@
+name,mailaddr,pass,organizational_unit
+yome,user001@myhome.local,pass001,CEO
+musuko,user002@myhome.local,pass002,Planning
+ore,user003@myhome.local,pass003,Operator
