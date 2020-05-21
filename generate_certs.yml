@@ -5,8 +5,8 @@
     ca_public: "~/easy-rsa/pki/ca.crt"
     publicdir: "~/easy-rsa/pki/issued"
     csrdir: "~/easy-rsa/pki/reqs"
-    privatedir: "~/easy-rsa/privates"
-    pkcs12dir: "~/easy-rsa/privates"
+    privatedir: "~/easy-rsa/pki/private"
+    pkcs12dir: "~/easy-rsa/pki/private"
     server_csv: "server-certs.csv"
     client_csv: "client-certs.csv"
   tasks:
