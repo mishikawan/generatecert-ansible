@@ -13,9 +13,9 @@ git clone https://github.com/mishikawan/generatecert-ansible.git
 ```
 
 
-#### 2. csvファイルの編集
+#### 2. yml(vars値), csvファイルの編集
 
-##### 2.1  generate_certs.yml 
+##### 2.1  generate_certs.yml (varsの値を各自環境用に変更してください)
 ```
 - hosts: 127.0.0.1
   gather_facts: False
@@ -30,13 +30,13 @@ git clone https://github.com/mishikawan/generatecert-ansible.git
     client_csv: "client-certs.csv"
 ```
 
-##### 2-2. server-certs.csv 
+##### 2-2. server-certs.csv (発行したいサーバ証明書情報を記載。一行目はカラム情報のため変更不可能)
 ```
 name,country,state,locality,organization,organizational_unit
 myhome.local,JP,Osaka,Osaka,MyHome,MyHome
 ```
 
-##### 2-3. client-certs.csv 
+##### 2-3. client-certs.csv (発行したいクライアント証明書情報を記載。一行目はカラム情報のため変更不可能)
 ```
 name,mailaddr,pass,organizational_unit
 user001,user001@myhome.local,pass001,Development
