@@ -1,7 +1,7 @@
 ## 概要
 
-> Ansible用playbookです
-> サーバ証明書／クライアント証明書を発行します。
+- Ansible用playbookです。
+- サーバ証明書／クライアント証明書を発行します。
 
 ### playbook実行
 
