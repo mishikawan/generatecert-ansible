@@ -20,12 +20,12 @@ git clone https://github.com/mishikawan/generatecert-ansible.git
 - hosts: 127.0.0.1
   gather_facts: False
   vars:
-    ca_private: "~/easy-rsa/pki/private/ca.key"
-    ca_public: "~/easy-rsa/pki/ca.crt"
-    publicdir: "~/easy-rsa/pki/issued"
-    csrdir: "~/easy-rsa/pki/reqs"
-    privatedir: "~/easy-rsa/privates"
-    pkcs12dir: "~/easy-rsa/privates"
+    ca_private: "~/easy-rsa/pki/private/ca.key"   CA証明書の秘密鍵のパス(各自指定パスを記載)
+    ca_public: "~/easy-rsa/pki/ca.crt"            CA証明書の公開鍵のパス(各自指定パスを記載)
+    publicdir: "~/easy-rsa/pki/issued"            発行した公開鍵の格納場所(各自指定パスを記載)
+    csrdir: "~/easy-rsa/pki/reqs"                 CSRの格納場所(各自指定パスを記載)
+    privatedir: "~/easy-rsa/privates"             発行した秘密鍵の格納場所(各自指定パスを記載)
+    pkcs12dir: "~/easy-rsa/privates"              発行したPKCS12の格納場所(各自指定パスを記載)
     server_csv: "server-certs.csv"
     client_csv: "client-certs.csv"
 ```
